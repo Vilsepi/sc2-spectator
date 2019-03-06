@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  GameServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-00035f41c82244dab
+      KeyName: villes-hagaton-2019
+      InstanceType: m5.large
+      SecurityGroups:
+      - !Ref GameServerSecurityGroup
+      BlockDeviceMappings:
+      - DeviceName: /dev/sda1
+        Ebs:
+          VolumeSize: 50
+          VolumeType: gp2
+      Tags:
+        - Key: Name
+          Value: Haga2019-sc2-gameserver
+
+  GameServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: sc2-spectator
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: "193.64.225.83/32"
+
+Outputs:
+  PublicIP:
+    Description: "Public IP address of the game server"
+    Value: !GetAtt GameServer.PublicIp
