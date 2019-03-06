@@ -1,4 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
+Description: Infra for running StarCraft 2 (Hagaton 2019)
+
 Resources:
   GameServer:
     Type: AWS::EC2::Instance
@@ -6,6 +8,7 @@ Resources:
       ImageId: ami-00035f41c82244dab
       KeyName: villes-hagaton-2019
       InstanceType: m5.large
+      IamInstanceProfile: !Ref GameServerInstanceProfile
       SecurityGroups:
       - !Ref GameServerSecurityGroup
       BlockDeviceMappings:
@@ -13,9 +16,18 @@ Resources:
         Ebs:
           VolumeSize: 50
           VolumeType: gp2
+          DeleteOnTermination: true
       Tags:
         - Key: Name
           Value: Haga2019-sc2-gameserver
+      UserData: !Base64
+        "Fn::Sub": |
+          #!/bin/bash
+          date > /init.txt
+          apt update
+          apt dist-upgrade
+          apt install awscli unzip python3-pip
+          pip3 install sc2
 
   GameServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -26,6 +38,33 @@ Resources:
           FromPort: "22"
           ToPort: "22"
           CidrIp: "193.64.225.83/32"
+
+  GameServerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref GameServerRole
+
+  GameServerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: ec2.amazonaws.com
+      Policies:
+        - PolicyName: policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: s3:*
+                Resource:
+                  - "arn:aws:s3:::hagaton2019-sc2-spectator"
+                  - "arn:aws:s3:::hagaton2019-sc2-spectator/*"
 
 Outputs:
   PublicIP:
