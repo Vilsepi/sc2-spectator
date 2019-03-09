@@ -10,10 +10,9 @@ class StateSender:
     def _get_map(self):
         blocked_points = []
         grid = self.bot.game_info.pathing_grid
-        print(grid.print())
         for y in range(grid.height):
             for x in range(grid.width):
-                if grid.is_set((x, y)):
+                if not grid.is_set((x, y)):
                     blocked_points.append({
                         "x": x,
                         "y": y
@@ -36,7 +35,9 @@ class StateSender:
                     "tag": unit.tag,
                     "type": str(unit.type_id).replace("UnitTypeId.", ""),
                     "pos_x": unit.position.x,
-                    "pos_y": unit.position.y
+                    "pos_y": unit.position.y,
+                    "radius": unit.radius,
+                    "health": unit.health_percentage,
                 } for unit in own_units],
             "enemy_units": [
                 {
@@ -44,6 +45,8 @@ class StateSender:
                     "type": str(unit.type_id).replace("UnitTypeId.", ""),
                     "pos_x": unit.position.x,
                     "pos_y": unit.position.y,
+                    "radius": unit.radius,
+                    "health": unit.health_percentage,
                     "is_visible": unit.is_visible
                 } for unit in enemy_units],
             "map": self.map

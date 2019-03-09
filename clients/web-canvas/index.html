@@ -3,8 +3,12 @@
 <head>
 <title>sc2-spectator</title>
 <style>
+    body {
+        background: #000;
+    }
     .canvas-area {
-        width: 952px;
+        background: #111;
+        width: 1400px;
         margin: 0 auto 0 auto;
     }
 </style>
@@ -12,7 +16,7 @@
 <body>
 
 <div class="canvas-area">
-<canvas id="mapCanvas" width="950" height="950" style="border:1px solid #d3d3d3;"></canvas>
+<canvas id="mapCanvas" width="1400" height="1050"></canvas>
 </div>
 
 <script>
@@ -20,9 +24,9 @@ var canvas = document.getElementById("mapCanvas");
 var context = canvas.getContext("2d");
 var ws = new WebSocket("ws://127.0.0.1:9000/");
 
-const RENDER_MULTIPLIER = 5;
+const RENDER_MULTIPLIER = 7;
 
-context.font = "10px Verdana";
+context.font = "16px Verdana";
 context.textAlign = "center";
 
 
@@ -30,25 +34,29 @@ ws.onmessage = function (event) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     var data = JSON.parse(event.data)
 
-    context.fillStyle = '#666';
+    context.fillStyle = '#393633';
     data.map.forEach(function(point) {
-        context.fillRect(point.x * RENDER_MULTIPLIER, point.y * RENDER_MULTIPLIER, 5, 5);
+        context.fillRect(point.x * RENDER_MULTIPLIER, point.y * RENDER_MULTIPLIER, 6, 6);
     });
 
-    context.fillStyle = '#09c45d';
     data.own_units.forEach(function(unit) {
-        context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, 5, 5);
+        var radius = unit.radius * 10;
+        var opacity = unit.health;
+        context.fillStyle = `rgba(9, 196, 93, ${opacity})`;
+        context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, radius, radius);
         context.fillText(unit.type, unit.pos_x* RENDER_MULTIPLIER, unit.pos_y* RENDER_MULTIPLIER);
     });
 
     data.enemy_units.forEach(function(unit) {
         if (unit.is_visible) {
-            context.fillStyle = '#dd024f';
+            var opacity = unit.health;
+            context.fillStyle = `rgba(221, 2, 79, ${opacity})`;
         }
         else {
             context.fillStyle = '#aaa';
         }
-        context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, 5, 5);
+        var radius = unit.radius * 10;
+        context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, radius, radius);
         context.fillText(unit.type, unit.pos_x* RENDER_MULTIPLIER, unit.pos_y* RENDER_MULTIPLIER);
     });
 
