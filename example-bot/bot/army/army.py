@@ -325,7 +325,7 @@ class ArmyManager:
                     # TODO FIXME This will probably bug if several bases are under attack at the same time
                     all_defenders = self.base_defenders.select_units(self.bot.units)
                     if all_defenders:
-                        self.logger.log(f"Defending our base against {enemies.amount} enemies with {all_defenders.amount} defenders: {all_defenders}")
+                        self.logger.debug(f"Defending our base against {enemies.amount} enemies with {all_defenders.amount} defenders: {all_defenders}")
                         for defender in all_defenders:
                             actions.append(defender.attack(enemy.position))
 
@@ -341,7 +341,7 @@ class ArmyManager:
             # Base defenders back to work
             if self.base_defenders and not (self.opponent.units and self.opponent.units.closer_than(10, town).exclude_type(UnitTypeId.OVERLORD)):
                 defenders = self.base_defenders.select_units(self.bot.units)
-                self.logger.log(f"{defenders.amount} defenders calming down")
+                self.logger.debug(f"{defenders.amount} defenders calming down")
                 for unit in defenders:
                     self.base_defenders.remove_unit(unit)
                     if unit.type_id == UnitTypeId.DRONE:
