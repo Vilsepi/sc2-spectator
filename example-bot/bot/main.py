@@ -15,7 +15,7 @@ from bot.util.debug import DebugPrinter
 from bot.util.log import TerminalLogger
 from bot.util.map import Map
 from bot.util.timer import Timer
-
+from bot.util.state_sender import StateSender
 
 class MyBot(sc2.BotAI):
     def on_start(self):
@@ -25,12 +25,14 @@ class MyBot(sc2.BotAI):
         self.army = ArmyManager(self)
         self.builder = Builder(self)
         self.map = Map(self)
+        self.state_sender = StateSender(self)
 
         self.drone_eco_optimization_timer = Timer(self, 0.2)
         self.army_timer = Timer(self, 0.05)
         self.build_timer = Timer(self, 0.5)
         self.match_status_timer = Timer(self, 60)
         self.warn_timer = Timer(self, 3)
+        self.state_send_timer = Timer(self, 1)
 
         self.score_logged = False
         self.active_expansion_builder = None
@@ -117,3 +119,6 @@ class MyBot(sc2.BotAI):
             for scout in scouts:
                 self.debugger.world_text("scout", scout.position)
         await self._client.send_debug()
+
+        if self.state_send_timer.rings:
+            await self.state_sender.send()
