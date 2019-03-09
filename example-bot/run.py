@@ -10,9 +10,7 @@ def pick_map(all_maps=False):
         return random.choice(maps.get())
     else:
         mapset = [
-            "(2)DreamcatcherLE",
-            "(2)LostandFoundLE",
-            "(2)RedshiftLE"
+            "AbyssalReefLE"
         ]
         return maps.get(random.choice(mapset))
 
@@ -23,7 +21,7 @@ def main():
     race = Race[info["race"]]
 
     run_game(
-        pick_map(True),
+        pick_map(),
         [
             Bot(race, MyBot()),
             Computer(Race.Random, Difficulty.VeryHard)

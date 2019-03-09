@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>sc2-spectator</title>
+<style>
+    .canvas-area {
+        width: 952px;
+        margin: 0 auto 0 auto;
+    }
+</style>
+</head>
+<body>
+
+<div class="canvas-area">
+<canvas id="mapCanvas" width="950" height="950" style="border:1px solid #d3d3d3;"></canvas>
+</div>
+
+<script>
+var canvas = document.getElementById("mapCanvas");
+var context = canvas.getContext("2d");
+var ws = new WebSocket("ws://127.0.0.1:9000/");
+
+const RENDER_MULTIPLIER = 5;
+
+context.font = "10px Verdana";
+context.textAlign = "center";
+
+
+ws.onmessage = function (event) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    var data = JSON.parse(event.data)
+
+    context.fillStyle = '#09c45d';
+    data.own_units.forEach(function(unit) {
+        context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, 5, 5);
+        context.fillText(unit.type, unit.pos_x* RENDER_MULTIPLIER, unit.pos_y* RENDER_MULTIPLIER);
+    });
+
+    data.enemy_units.forEach(function(unit) {
+        if (unit.is_visible) {
+            context.fillStyle = '#dd024f';
+        }
+        else {
+            context.fillStyle = '#aaa';
+        }
+        context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, 5, 5);
+        context.fillText(unit.type, unit.pos_x* RENDER_MULTIPLIER, unit.pos_y* RENDER_MULTIPLIER);
+    });
+};
+
+</script>
+
+</body>
+</html>

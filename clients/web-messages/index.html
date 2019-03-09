@@ -6,15 +6,15 @@
     <body>
         <script>
             var ws = new WebSocket("ws://127.0.0.1:9000/"),
-                messages = document.createElement('ul');
+                messages = document.createElement('div');
             ws.onmessage = function (event) {
-                var messages = document.getElementsByTagName('ul')[0],
-                    message = document.createElement('li'),
+                var messages = document.getElementsByTagName('div')[0],
+                    message = document.createElement('pre'),
                     content = document.createTextNode(event.data);
-                message.appendChild(content);
-                messages.appendChild(message);
+                message.prepend(content);
+                messages.prepend(message);
             };
-            document.body.appendChild(messages);
+            document.body.prepend(messages);
         </script>
     </body>
 </html>

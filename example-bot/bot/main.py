@@ -32,7 +32,7 @@ class MyBot(sc2.BotAI):
         self.build_timer = Timer(self, 0.5)
         self.match_status_timer = Timer(self, 60)
         self.warn_timer = Timer(self, 3)
-        self.state_send_timer = Timer(self, 1)
+        self.state_send_timer = Timer(self, 0.1)
 
         self.score_logged = False
         self.active_expansion_builder = None
