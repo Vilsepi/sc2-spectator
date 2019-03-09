@@ -30,6 +30,11 @@ ws.onmessage = function (event) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     var data = JSON.parse(event.data)
 
+    context.fillStyle = '#666';
+    data.map.forEach(function(point) {
+        context.fillRect(point.x * RENDER_MULTIPLIER, point.y * RENDER_MULTIPLIER, 5, 5);
+    });
+
     context.fillStyle = '#09c45d';
     data.own_units.forEach(function(unit) {
         context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, 5, 5);
@@ -46,6 +51,7 @@ ws.onmessage = function (event) {
         context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, 5, 5);
         context.fillText(unit.type, unit.pos_x* RENDER_MULTIPLIER, unit.pos_y* RENDER_MULTIPLIER);
     });
+
 };
 
 </script>
