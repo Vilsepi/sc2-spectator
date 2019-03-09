@@ -29,6 +29,10 @@ const RENDER_MULTIPLIER = 7;
 context.font = "16px Verdana";
 context.textAlign = "center";
 
+function drawBlip(x, y, size, label) {
+    context.fillRect(x * RENDER_MULTIPLIER, y * RENDER_MULTIPLIER, size * 10, size * 10);
+    context.fillText(label, x * RENDER_MULTIPLIER, (y * RENDER_MULTIPLIER) - RENDER_MULTIPLIER);
+}
 
 ws.onmessage = function (event) {
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -40,24 +44,18 @@ ws.onmessage = function (event) {
     });
 
     data.own_units.forEach(function(unit) {
-        var radius = unit.radius * 10;
-        var opacity = unit.health;
-        context.fillStyle = `rgba(9, 196, 93, ${opacity})`;
-        context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, radius, radius);
-        context.fillText(unit.type, unit.pos_x* RENDER_MULTIPLIER, unit.pos_y* RENDER_MULTIPLIER);
+        context.fillStyle = `rgba(9, 196, 93, ${unit.health})`;
+        drawBlip(unit.pos_x, unit.pos_y, unit.radius, unit.type);
     });
 
     data.enemy_units.forEach(function(unit) {
         if (unit.is_visible) {
-            var opacity = unit.health;
-            context.fillStyle = `rgba(221, 2, 79, ${opacity})`;
+            context.fillStyle = `rgba(221, 2, 79, ${unit.health})`;
         }
         else {
             context.fillStyle = '#aaa';
         }
-        var radius = unit.radius * 10;
-        context.fillRect(unit.pos_x * RENDER_MULTIPLIER, unit.pos_y * RENDER_MULTIPLIER, radius, radius);
-        context.fillText(unit.type, unit.pos_x* RENDER_MULTIPLIER, unit.pos_y* RENDER_MULTIPLIER);
+        drawBlip(unit.pos_x, unit.pos_y, unit.radius, unit.type);
     });
 
 };
