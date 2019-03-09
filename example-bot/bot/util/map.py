@@ -22,13 +22,14 @@ class Map:
         enemy_base = self.bot.opponent.known_hq_location
         enemy_natural = self.bot.opponent.known_natural
         my_base = self.bot.start_location
-        self.opponent_corner = enemy_base.closest(self.corners)
-        self.my_corner = my_base.closest(self.corners)
-        sorted_from_enemy_nat = enemy_natural.sort_by_distance(self.corners)
-        self.helper_corner = sorted_from_enemy_nat[2]
+        if enemy_base:
+            self.opponent_corner = enemy_base.closest(self.corners)
+            self.my_corner = my_base.closest(self.corners)
+            sorted_from_enemy_nat = enemy_natural.sort_by_distance(self.corners)
+            self.helper_corner = sorted_from_enemy_nat[2]
 
-        distance = self.helper_corner.distance_to(self.opponent_corner)
-        self.flanker_waypoint = self.helper_corner.towards(self.opponent_corner, distance * 0.7)
+            distance = self.helper_corner.distance_to(self.opponent_corner)
+            self.flanker_waypoint = self.helper_corner.towards(self.opponent_corner, distance * 0.7)
 
     def get_random_point(self):
         r = self.bot.game_info.playable_area
